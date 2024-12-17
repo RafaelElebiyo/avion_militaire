@@ -1,12 +1,11 @@
-const bonus = ["assets/img/bonus_1.png","assets/img/bonus_2.png","assets/img/bonus_3.png","assets/img/bonus_4.png"]
-export class Bonus {
-    constructor(carte) {
+export class TirEnemi {
+    constructor(carte, x, y) {
         this.carte = carte;
-        this.positionX = Math.random() * (590 - 20);
-        this.positionY = 0;
+        this.positionX = x;
+        this.positionY = y;
         this.element = document.createElement('img');
-        this.element.src = bonus[Math.floor(Math.random()*bonus.length)];
-        this.element.className = 'bonus';
+        this.element.src = "assets/img/tir_enemi.png";
+        this.element.className = 'tir_enemi';
         this.carte.appendChild(this.element);
 
         this.mettreAJourPosition();
@@ -19,15 +18,14 @@ export class Bonus {
     }
 
     mouvement() {
-        const vitesse =2;
-        this.intervalle = setInterval(() => {
+        const vitesse = 10; // Velocidad del disparo enemigo (hacia abajo)
+        this.intervalleTir = setInterval(() => {
             this.positionY += vitesse;
             this.mettreAJourPosition();
-            if (this.positionY > 600) {
-                clearInterval(this.intervalle);
+            if (this.positionY > this.carte.offsetHeight) {
+                clearInterval(this.intervalleTir);
                 this.element.remove();
             }
         }, 30);
     }
-
 }
