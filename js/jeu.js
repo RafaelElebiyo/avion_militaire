@@ -92,21 +92,26 @@ class Jeu {
 
         document.querySelectorAll('.tir_enemi').forEach((tirEnemiElement) => {
             if (verifierCollision(this.avion.element, tirEnemiElement)) {
+                const viesContainer = document.getElementById('vies');
+                tirEnemiElement.remove();
                 if (!this.bouclier) {
-                    this.avion.remove();
-                    tirEnemiElement.remove();
+                    this.avion.element.src = "assets/img/explotion.gif"
+                    
                     setTimeout(() => {
+                        this.avion.element.remove();
                         if (this.enCours) this.finDuJeu();
                     }, 500)
                     this.score = 0;
                 }
             }
         });
-
         document.querySelectorAll('.enemi').forEach((enemiElement) => {
             if (verifierCollision(this.avion.element, enemiElement)) {
+                enemiElement.src = "assets/img/explotion.gif";
+                setTimeout(() => {
+                    enemiElement.remove()
+                }, 500);
                 if (!this.bouclier) {
-                    enemiElement.src = "assets/img/explotion.gif";
                     this.avion.element.src = "assets/img/explotion.gif"
                     setTimeout(() => {
                         this.avion.element.remove();
@@ -121,12 +126,16 @@ class Jeu {
 
         document.querySelectorAll('.obstacle').forEach((obstacleElement) => {
             if (verifierCollision(this.avion.element, obstacleElement)) {
+                obstacleElement.src = "assets/img/explotion_obstacle.gif";
+                setTimeout(() => {
+                    obstacleElement.remove()
+                }, 500);
                 if (!this.bouclier) {
-                    obstacleElement.src = "assets/img/explotion_obstacle.gif";
                     this.avion.element.src = "assets/img/explotion.gif"
                     setTimeout(() => {
                         this.avion.element.remove();
                         obstacleElement.remove()
+
                         this.finDuJeu()
                     }, 500);
                     this.score = 0;
@@ -137,11 +146,24 @@ class Jeu {
         document.querySelectorAll('.bonus').forEach((bonusElement) => {
             if (verifierCollision(this.avion.element, bonusElement)) {
                 bonusElement.remove()
-                if(bonusElement.src.includes("bonus_1.png")){
+                if (bonusElement.src.includes("bonus_1.png")) {
                     this.score += 20;
-                    //vie_extra
+
+                    const viesContainer = document.getElementById('vies');
+                    if (viesContainer) {
+                        // Crear la imagen de vida extra
+                        const img = document.createElement('img');
+                        img.src = "assets/img/bonus_1.png";
+                        img.alt = "vie extra";
+                        img.style.height = "20px";
+                        img.style.width = "20px";
+
+                        if (viesContainer.childElementCount < 3) { // Máximo de 3 vidas extra
+                            viesContainer.appendChild(img);
+                        }
+                    }
                 }
-                else if(bonusElement.src.includes("bonus_2.png")){
+                else if (bonusElement.src.includes("bonus_2.png")) {
                     this.score += 200;
                 }
                 else if (bonusElement.src.includes("bonus_3.png")) {
@@ -154,11 +176,12 @@ class Jeu {
                     }, 6000)
                     this.score += 20;
                 }
-                else if(bonusElement.src.includes("bonus_4.png")){
+                else if (bonusElement.src.includes("bonus_4.png")) {
                     //amelioration du avion
-                    this.score += 20;  
-                } 
-                
+                    this.avion.element.src = "assets/img/avion_2.png"
+                    this.score += 20;
+                }
+
             }
         });
 
@@ -199,7 +222,7 @@ class Jeu {
         clearInterval(this.intervalleEnemis);
         clearInterval(this.intervalleObstacles);
         clearInterval(this.intervalleBonus);
-
+        var vies = document.getElementById('vies');
         document.getElementById('h1').innerHTML = "Jeu terminé : vous avez perdu";
         document.getElementById('p').innerHTML = "Recommencer";
         document.getElementById('ecran-demarrage').style.display = 'flex';
@@ -214,7 +237,7 @@ class Jeu {
         clearInterval(this.intervalleEnemis);
         clearInterval(this.intervalleObstacles);
         clearInterval(this.intervalleBonus);
-
+        var vies = document.getElementById('vies');
         document.getElementById('ecran-demarrage').style.display = 'flex';
         document.getElementById('jeu').style.display = 'none';
         document.getElementById('h1').innerHTML = "Jeu d'Avion Militaire";

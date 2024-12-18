@@ -25,7 +25,7 @@ export class Enemi {
     }
 
     mouvement() {
-        const vitesse = 3;
+        const vitesse = Math.floor(Math.random()*1+2);
         this.intervalle = setInterval(() => {
             this.positionY += vitesse;
             this.mettreAJourPosition();
