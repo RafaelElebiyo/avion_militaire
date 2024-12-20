@@ -56,8 +56,8 @@ p {
 }
 
 .tir_2{
-  width: 20px;
-  height: 25px;
+  width: 30px;
+  height: 35px;
 }
 
 .enemi, .obstacle {
@@ -72,29 +72,29 @@ p {
 }
 
 #menu {
-  display: flex; /* Organiza los elementos en línea */
-  justify-content: space-between; /* Coloca uno a la izquierda y otro a la derecha */
-  align-items: center; /* Centra verticalmente */
-  width: 50%; /* Limita el ancho para que se vea centrado */
-  margin: 0 auto; /* Centra el contenedor en la pantalla */
-  padding: 10px; /* Espacio interior */
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  width: 50%; 
+  margin: 0 auto;
+  padding: 10px; 
   box-sizing: border-box;
 }
 
 #menu p {
-  margin: 0; /* Elimina márgenes */
+  margin: 0; 
   color: yellowgreen;
-  font-size: 1.2em; /* Ajusta tamaño de letra */
+  font-size: 1.2em; 
   margin-left: 30px;
 }
 
 #vies {
   height: 20px;
-  width: auto; /* Mantén proporción */
+  width: auto; 
   margin-right: 30px;
 }
 
 #vies img {
-  height: 20px; /* Ajusta tamaño de imagen */
-  width: auto; /* Mantén proporción */
+  height: 20px;
+  width: auto; 
 }

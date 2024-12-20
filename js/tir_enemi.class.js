@@ -18,15 +18,16 @@ export class TirEnemi {
     }
 
     mouvement() {
-        const vitesse = Math.floor(Math.random() * 3 + 4); // Velocidad del disparo enemigo (más rápida que el enemigo)
-        this.intervalleTir = setInterval(() => {
-            this.positionY += vitesse; // Incremento de posición más rápido
+        const vitesse = 4;
+        this.intervalle = setInterval(() => {
+            this.positionY += vitesse;
             this.mettreAJourPosition();
-            if (this.positionY > this.carte.offsetHeight) {
-                clearInterval(this.intervalleTir);
+            if (this.positionY > 600) {
+                clearInterval(this.intervalle);
                 this.element.remove();
             }
         }, 30);
     }
+    
     
 }

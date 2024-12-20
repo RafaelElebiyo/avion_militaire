@@ -29,6 +29,9 @@ export class Avion {
     }
 
     tirer() {
-        new Tir(this.carte, this.positionX + 20, this.positionY);
+        new Tir(this.carte, this.positionX + 20, this.positionY,false);
+    }
+    tirAmeliorer(){
+        new Tir(this.carte, this.positionX + 20, this.positionY,true); 
     }
 }

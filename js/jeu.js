@@ -2,17 +2,17 @@ import { Avion } from './avion.class.js';
 import { Enemi } from './enemi.class.js';
 import { Obstacle } from './obstacle.class.js';
 import { Bonus } from './bonus.class.js';
-import { Tir } from './tir.class.js';
-const bonuses = ["assets/img/bonus_1.png", "assets/img/bonus_2.png", "assets/img/bonus_3.png", "assets/img/bonus_4.png"]
 
 class Jeu {
     constructor() {
+        this.ameliorer=false;
         this.enCours = false;
         this.avion = null;
         this.score = 0;
         this.bouclier = false
         this.carte = document.getElementById('carte');
         this.scoreElement = document.getElementById('score');
+        this.viesContainer = document.getElementById('vies');
 
         document.addEventListener('keydown', this.demarrerAvecEntree);
         document.addEventListener('keydown', this.gestionClavier);
@@ -31,7 +31,7 @@ class Jeu {
         document.getElementById('ecran-demarrage').style.display = 'none';
         document.getElementById('jeu').style.display = 'block';
         document.getElementById('score').innerHTML = '000000';
-        this.carte.innerHTML = ''; // Limpiar la carte al inicio
+        this.carte.innerHTML = '';
 
         this.avion = new Avion(this.carte, this);
 
@@ -89,57 +89,111 @@ class Jeu {
                 }
             });
         });
+        document.querySelectorAll('.tir_2').forEach((tirElement) => {
+
+            document.querySelectorAll('.enemi').forEach((enemiElement) => {
+                if (verifierCollision(tirElement, enemiElement)) {
+                    enemiElement.src = "assets/img/explotion.gif";
+                    setTimeout(() => enemiElement.remove(), 500);
+                    tirElement.remove();
+                    this.score += 10;
+                }
+            });
+
+            document.querySelectorAll('.obstacle').forEach((obstacleElement) => {
+                if (verifierCollision(tirElement, obstacleElement)) {
+                    obstacleElement.src = "assets/img/explotion_obstacle.gif";
+                    setTimeout(() => obstacleElement.remove(), 500);
+                    tirElement.remove();
+                    this.score += 5;
+                }
+            });
+
+            document.querySelectorAll('.bonus').forEach((bonusElement) => {
+                if (verifierCollision(tirElement, bonusElement)) {
+                    tirElement.remove();
+                    bonusElement.remove()
+                    this.score += 20;
+                }
+            });
+        });
 
         document.querySelectorAll('.tir_enemi').forEach((tirEnemiElement) => {
             if (verifierCollision(this.avion.element, tirEnemiElement)) {
-                const viesContainer = document.getElementById('vies');
                 tirEnemiElement.remove();
-                if (!this.bouclier) {
+                if (!this.bouclier && !this.ameliorer) {
+                    if (this.viesContainer.childElementCount > 1) {
+                       this.viesContainer.removeChild(this.viesContainer.lastChild)
+
+                    } else {
+                        this.avion.element.src = "assets/img/explotion.gif"
+
+                        setTimeout(() => {
+                            this.avion.element.remove();
+                            if (this.enCours) this.finDuJeu();
+                        }, 500)
+                        // this.score = 0;
+                    }
+                }
+               
+            }
+        });
+        document.querySelectorAll('.enemi').forEach((enemiElement) => {
+            if (verifierCollision(this.avion.element, enemiElement)) {            
+                
+                enemiElement.src = "assets/img/explotion.gif"
+                setTimeout(()=>{
+                    enemiElement.remove()
+                },200)
+                console.log("bouclier"+this.bouclier)
+                if (!this.bouclier && !this.ameliorer) {
+                    if (this.viesContainer.childElementCount > 1) {
+                        this.viesContainer.removeChild(this.viesContainer.lastChild)
+ 
+                     } else {
                     this.avion.element.src = "assets/img/explotion.gif"
-                    
+
                     setTimeout(() => {
                         this.avion.element.remove();
                         if (this.enCours) this.finDuJeu();
                     }, 500)
-                    this.score = 0;
                 }
-            }
-        });
-        document.querySelectorAll('.enemi').forEach((enemiElement) => {
-            if (verifierCollision(this.avion.element, enemiElement)) {
-                enemiElement.src = "assets/img/explotion.gif";
-                setTimeout(() => {
-                    enemiElement.remove()
-                }, 500);
-                if (!this.bouclier) {
-                    this.avion.element.src = "assets/img/explotion.gif"
-                    setTimeout(() => {
-                        this.avion.element.remove();
-                        enemiElement.remove()
-                        this.finDuJeu()
-                    }, 500);
+                    // this.score = 0;
+                }
+                else {
+                    setTimeout(
+                        ()=>{this.avion.element.src = "assets/img/avion.png";
+                            this.bouclier = false;},200
+                    )
+                    
+                }
 
-                    this.score = 0;
-                }
             }
         });
 
         document.querySelectorAll('.obstacle').forEach((obstacleElement) => {
             if (verifierCollision(this.avion.element, obstacleElement)) {
-                obstacleElement.src = "assets/img/explotion_obstacle.gif";
-                setTimeout(() => {
-                    obstacleElement.remove()
-                }, 500);
-                if (!this.bouclier) {
+                 obstacleElement.remove()
+                
+                if (!this.bouclier && !this.ameliorer) {
+                    if (this.viesContainer.childElementCount > 1) {
+                        this.viesContainer.removeChild(this.viesContainer.lastChild)
+ 
+                     } else {
                     this.avion.element.src = "assets/img/explotion.gif"
                     setTimeout(() => {
                         this.avion.element.remove();
-                        obstacleElement.remove()
+                        // obstacleElement.remove()
 
                         this.finDuJeu()
-                    }, 500);
-                    this.score = 0;
+                    }, 500);}
+                    // this.score = 0;
                 }
+                else {
+                    this.avion.element.src = "assets/img/avion.png";
+                    this.bouclier = false;
+                }
+
             }
         });
 
@@ -149,17 +203,15 @@ class Jeu {
                 if (bonusElement.src.includes("bonus_1.png")) {
                     this.score += 20;
 
-                    const viesContainer = document.getElementById('vies');
-                    if (viesContainer) {
-                        // Crear la imagen de vida extra
+                    if (this.viesContainer) {
                         const img = document.createElement('img');
                         img.src = "assets/img/bonus_1.png";
                         img.alt = "vie extra";
                         img.style.height = "20px";
                         img.style.width = "20px";
 
-                        if (viesContainer.childElementCount < 3) { // Máximo de 3 vidas extra
-                            viesContainer.appendChild(img);
+                        if (this.viesContainer.childElementCount < 3) { 
+                            this.viesContainer.appendChild(img);
                         }
                     }
                 }
@@ -173,17 +225,23 @@ class Jeu {
                     setTimeout(() => {
                         this.avion.element.src = "assets/img/avion.png";
                         this.bouclier = false;
-                    }, 6000)
+                    }, 10000)
                     this.score += 20;
                 }
                 else if (bonusElement.src.includes("bonus_4.png")) {
-                    //amelioration du avion
-                    this.avion.element.src = "assets/img/avion_2.png"
+                    
+                    this.ameliorer=true;
+                    this.avion.element.src = "assets/img/avion_3.png"
+                    setTimeout(() => {
+                        this.avion.element.src = "assets/img/avion.png";
+                        this.ameliorer= false;
+                    }, 15000)
                     this.score += 20;
                 }
 
             }
         });
+
 
         this.actualiserScore()
     }
@@ -209,7 +267,12 @@ class Jeu {
                 this.avion.deplacer('droite');
                 break;
             case ' ':
-                this.avion.tirer();
+                if(this.ameliorer){
+                    this.avion.tirAmeliorer()
+                }
+                else{
+                    this.avion.tirer()
+                }
                 break;
             case 'Escape':
                 this.fin();
@@ -224,9 +287,12 @@ class Jeu {
         clearInterval(this.intervalleBonus);
         var vies = document.getElementById('vies');
         document.getElementById('h1').innerHTML = "Jeu terminé : vous avez perdu";
-        document.getElementById('p').innerHTML = "Recommencer";
+        document.getElementById('score_final').innerHTML = `Score final : ${this.score} `;
+        document.getElementById('p').innerHTML = `Recommencer `;
+
         document.getElementById('ecran-demarrage').style.display = 'flex';
         document.getElementById('jeu').style.display = 'none';
+        console.log(this.score)
         this.carte.innerHTML = '';
         this.score = 0;
         this.scoreElement.textContent = '000000';

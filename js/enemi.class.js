@@ -15,7 +15,6 @@ export class Enemi {
         this.mettreAJourPosition();
         this.mouvement();
 
-        // Iniciar disparos aleatorios
         this.shootInterval = this.initTirAleatorio();
     }
 
@@ -39,16 +38,22 @@ export class Enemi {
     
 
     initTirAleatorio() {
-        return setInterval(() => {
-            this.tirer();
-        }, Math.floor(Math.random() * 300) + 200);
-    }
+        setTimeout(() => {
+            this.shootInterval = setInterval(() => {
+                this.tirer();
+            }, Math.floor(Math.random() * 300) + 400);
+        }, 100);
+    }    
 
     tirer() {
-        const positionActuelle = this.element.getBoundingClientRect(); // Obtener posición actual del enemigo
-        const x = this.element.offsetLeft + (this.element.offsetWidth / 2) - 5; // Ajustar el centro horizontal
-        const y = this.element.offsetTop + this.element.offsetHeight; // Justo debajo del enemigo
-        new TirEnemi(this.carte, x, y);
+    if (!document.body.contains(this.element)) { 
+        clearInterval(this.shootInterval);
+        return;
     }
+    const x = this.element.offsetLeft + (this.element.offsetWidth / 2) - 5;
+    const y = this.element.offsetTop + this.element.offsetHeight;
+    new TirEnemi(this.carte, x, y);
+}
+
     
 }
